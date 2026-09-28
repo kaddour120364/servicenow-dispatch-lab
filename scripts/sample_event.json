@@ -1,0 +1,6 @@
+{
+  "inputs": { "name": "  Ada Lovelace ", "country": "Canada" },
+  "ref": "refs/heads/main",
+  "repository": { "full_name": "your-user/servicenow-dispatch-lab" },
+  "sender": { "login": "servicenow-lab-app[bot]" }
+}

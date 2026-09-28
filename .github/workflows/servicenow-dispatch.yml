@@ -1,0 +1,46 @@
+name: ServiceNow dispatch
+
+# Triggered by the ServiceNow simulator (GitHub App installation token)
+on:
+  workflow_dispatch:
+    inputs:
+      name:
+        description: "Person name"
+        required: true
+        type: string
+      country:
+        description: "Country"
+        required: true
+        type: string
+
+# Shows the payload in the Actions run list
+run-name: "ServiceNow request - ${{ inputs.name }} (${{ inputs.country }})"
+
+permissions:
+  contents: read
+
+jobs:
+  parse-payload:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      # The script reads the inputs from $GITHUB_EVENT_PATH itself.
+      # We never paste ${{ inputs.* }} into a shell command (script injection).
+      - name: Parse payload to JSON
+        run: python scripts/parse_payload.py --output payload.json
+
+      - name: Show result
+        run: cat payload.json
+
+      - name: Upload payload.json
+        uses: actions/upload-artifact@v4
+        with:
+          name: servicenow-payload-${{ github.run_id }}
+          path: payload.json
